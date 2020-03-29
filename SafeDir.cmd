@@ -11,33 +11,33 @@ call :READ_DATA || (
     exit
   ) else (
     call :BUILD_SAFEDIR
-    call :READ_DATA || :EXIT_MSG "odmowa dost©pu"
+    call :READ_DATA || :EXIT_MSG "access denied"
   )
 )
 set usrPass=
 cls
 if !isOpened! EQU 0 (
-  set haslo=hasˆo
+  set haslo=the password
   if "!passwd!"=="1234" set haslo="!passwd!"
-  echo ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄ¿
-  echo ³ Bezpieczna lokalizacja ³ ZAMKNI¨TA ³
-  echo ³                        ÀÄÄÄÄÄÄÄÄÄÄÄÙ
-  set /p usrPass=À Wpisz !haslo!, aby otworzy†: 
+  echo ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿
+  echo ³ Safe location    ³  CLOSED  ³
+  echo ³                  ÀÄÄÄÄÄÄÄÄÄÄÙ
+  set /p usrPass=À Enter !haslo! to open: 
   echo:
   if "!usrPass!"=="!passwd!" (
     mklink /j "!linkDir!" "!sfDr[3]!" 1>nul 2>&1
     explorer.exe "!linkDir!"
     (echo 1!passwd!)>"%sfDr[5]%"
   ) else (
-    echo - Hasˆo niepoprawne^^!
+    echo - Incorrect password^^!
     timeout 3 1>nul
   )
 ) else (
-  echo ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄ¿
-  echo ³ Bezpieczna lokalizacja ³  OTWARTA  ³
-  echo ³                        ÀÄÄÄÄÄÄÄÄÄÄÄÙ
-  echo ³ Wci˜nij [ENTER], aby zamkn¥†, lub 
-  set /p usrPass=À wprowad« nowe hasˆo: 
+  echo ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿
+  echo ³ Safe location    ³   OPEN   ³
+  echo ³                  ÀÄÄÄÄÄÄÄÄÄÄÙ
+  echo ³ Press [ENTER] to close,
+  set /p usrPass=À or type new password: 
   echo:
   set true=0
   if "!usrPass!"=="!passwd!" set true=1
@@ -47,13 +47,13 @@ if !isOpened! EQU 0 (
     (echo 0!passwd!)>"%sfDr[5]%"
     exit
   ) else (
-    set /p cnfPass=- Wpisz ponownie, aby zmieni† hasˆo: 
+    set /p cnfPass=- Retype it to confirm: 
     echo:
     if "!usrPass!"=="!cnfPass!" (
       (echo 1!usrPass!)>"%sfDr[5]%"
-      echo - Hasˆo zostaˆo zmienione.
+      echo - The password has been changed.
     ) else (
-      echo - Wprowadzone frazy nie s¥ identyczne^^!
+      echo - The password confirmation does not match^^!
     )
     timeout 3 1>nul
   )
@@ -65,13 +65,13 @@ rem ---------------------------------- ¿ Ù Ú À ³ Ä Â Á ´ Ã Å -------------------
 :INITIALIZATION
 color 0A & chcp 852 1>nul
 title SafeDir (c) 2018 Mateusz Piechnat
-call :PRINT "Trwa uruchamianie..."
+call :PRINT "Loading..."
 call :PRINT .
 set charTable= !"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
-setlocal EnableDelayedExpansion EnableExtensions || call :EXIT_MSG "wˆ¥czenie rozszerzeä byˆo niemo¾liwe"
-call :IS_NTFS || call :EXIT_MSG "skrypt wymaga systemu plik¢w NTFS"
+setlocal EnableDelayedExpansion EnableExtensions || call :EXIT_MSG "enabling extensions failed"
+call :IS_NTFS || call :EXIT_MSG "this script requires the NTFS file system"
 call :PRINT .
-set /a selfTck=4992
+set /a selfTck=4916
 set selfPath=%~dpf0
 set firstArg=%~dpf1
 set linkDir=%~dpn0
@@ -110,7 +110,7 @@ set passwd=!passwd:~1!
 exit /b 0
 
 :BUILD_SAFEDIR
-call :PRINT "Przygotowywanie bezpiecznej lokalizacji..."
+call :PRINT "Preparing a safe location..."
 for /l %%g in (0,1,3) do (
   call :PRINT .
   if %%g GTR 0 md "!sfDr[%%g]!"
@@ -167,5 +167,5 @@ if %len% GEQ 2 if "%arr[1]%"=="NTFS" exit /b 0
 exit /b -1
 
 :EXIT_MSG
-echo: & echo Wyst¥piˆ bˆ¥d: & echo - %~1. & pause 1>nul
+echo: & echo An error occured: & echo - %~1. & pause 1>nul
 exit
